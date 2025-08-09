@@ -30,7 +30,7 @@ The calendar view now supports drag and drop functionality for study session blo
 - **Red feedback** - Appears if the drop location is invalid
 
 ### Auto-Snapping Behavior
-- Sessions automatically snap to **15-minute intervals**
+- Sessions automatically snap to **intervals based on your buffer time setting** (minimum 5 minutes)
 - The system finds the **nearest available time slot** if your exact drop location is occupied
 - **Work day validation** - Ensures you can only drop on configured work days
 - **Study window respect** - Sessions can only be placed within your configured study hours
