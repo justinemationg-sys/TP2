@@ -471,6 +471,103 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
     });
   };
 
+  // Draggable Event Component for mobile
+  const DraggableEvent: React.FC<{ event: CalendarEvent; onEventClick: (event: CalendarEvent) => void }> = ({ event, onEventClick }) => {
+    const [{ isDragging }, drag] = useDrag(() => ({
+      type: 'event',
+      item: event,
+      canDrag: event.resource.type === 'study', // Only study sessions can be dragged
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+      begin: () => {
+        setIsDragging(true);
+        setDragFeedback('');
+      },
+      end: () => {
+        setIsDragging(false);
+      },
+    }), [event]);
+
+    const canDrag = event.resource.type === 'study';
+
+    return (
+      <div
+        ref={canDrag ? drag : null}
+        onClick={() => onEventClick(event)}
+        className={`mb-2 p-3 rounded-lg text-white text-sm font-medium cursor-pointer transition-all duration-200 hover:opacity-80 ${
+          isDragging ? 'opacity-50 scale-95' : ''
+        } ${canDrag ? 'cursor-move' : 'cursor-pointer'}`}
+        style={{
+          backgroundColor: getEventColor(event),
+          touchAction: canDrag ? 'none' : 'auto' // Disable touch scrolling when dragging
+        }}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold truncate">
+              {event.title} {(() => {
+                if (event.allDay) return '';
+                const durationHours = moment(event.end).diff(moment(event.start), 'hours', true);
+                const durationMinutes = moment(event.end).diff(moment(event.start), 'minutes', true);
+                if (durationHours >= 1) {
+                  return `(${Math.round(durationHours)}h)`;
+                } else if (durationMinutes > 0) {
+                  return `(${Math.round(durationMinutes)}m)`;
+                }
+                return '';
+              })()}
+              {canDrag && <span className="text-xs ml-1">📱</span>}
+            </div>
+            <div className="text-xs opacity-90">
+              {moment(event.start).format('h:mm A')} - {moment(event.end).format('h:mm A')}
+            </div>
+            {event.resource.type === 'study' && (
+              <div className="text-xs opacity-75 mt-1">
+                {formatTime(event.resource.data.session.allocatedHours)}
+              </div>
+            )}
+          </div>
+          <div className="ml-2">
+            {event.resource.type === 'study' ? (
+              <BookOpen size={16} />
+            ) : (
+              <Clock size={16} />
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Drop Zone Component for time slots
+  const TimeSlotDropZone: React.FC<{ hour: number; children: React.ReactNode }> = ({ hour, children }) => {
+    const [{ isOver, canDrop }, drop] = useDrop(() => ({
+      accept: 'event',
+      drop: (item: CalendarEvent) => {
+        handleMobileDrop(item, hour);
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
+    }), [hour]);
+
+    return (
+      <div
+        ref={drop}
+        className={`flex-1 p-3 min-h-[60px] transition-colors duration-200 ${
+          isOver && canDrop ? 'bg-green-100 dark:bg-green-900' : ''
+        } ${canDrop && !isOver ? 'bg-blue-50 dark:bg-blue-900' : ''}`}
+      >
+        {children}
+        {isOver && canDrop && (
+          <div className="absolute inset-0 border-2 border-dashed border-green-500 rounded-lg pointer-events-none" />
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50 rounded-2xl shadow-xl p-4 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
       {/* Header */}
