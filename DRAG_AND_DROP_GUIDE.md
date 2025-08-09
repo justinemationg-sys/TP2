@@ -14,6 +14,7 @@ The calendar view now supports drag and drop functionality for study session blo
 
 ### ❌ What You Cannot Drag
 - **Fixed Commitments** - These remain locked in place
+- **Missed Sessions** - Sessions that have been missed cannot be rescheduled via drag and drop
 - **Sessions to Different Days** - Sessions can only be moved within the same day
 - **Sessions on Non-Work Days** - Cannot drop sessions on days you haven't configured as work days
 
