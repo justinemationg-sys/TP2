@@ -672,54 +672,16 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
                     {formatTimeSlot(hour)}
                   </div>
                   
-                  {/* Events */}
-                  <div className="flex-1 p-3 min-h-[60px]">
+                  {/* Events - Now with drag and drop support */}
+                  <TimeSlotDropZone hour={hour}>
                     {events.map((event) => (
-                      <div
-                        key={event.id} // Ensure unique key for each event render
-                        onClick={() => handleEventClick(event)}
-                        className="mb-2 p-3 rounded-lg text-white text-sm font-medium cursor-pointer transition-all duration-200 hover:opacity-80"
-                        style={{ backgroundColor: getEventColor(event) }}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1 min-w-0">
-                            <div className="font-semibold truncate">
-                              {event.title} {(() => {
-                                // Don't show duration for all-day events
-                                if (event.allDay) return '';
-                                
-                                const durationHours = moment(event.end).diff(moment(event.start), 'hours', true);
-                                const durationMinutes = moment(event.end).diff(moment(event.start), 'minutes', true);
-                                if (durationHours >= 1) {
-                                  // Display hours if at least 1 full hour
-                                  return `(${Math.round(durationHours)}h)`;
-                                } else if (durationMinutes > 0) {
-                                  // Display minutes if less than an hour but more than 0
-                                  return `(${Math.round(durationMinutes)}m)`;
-                                }
-                                return ''; // No duration if 0 or negative
-                              })()}
-                            </div>
-                            <div className="text-xs opacity-90">
-                              {moment(event.start).format('h:mm A')} - {moment(event.end).format('h:mm A')}
-                            </div>
-                            {event.resource.type === 'study' && (
-                              <div className="text-xs opacity-75 mt-1">
-                                {formatTime(event.resource.data.session.allocatedHours)}
-                              </div>
-                            )}
-                          </div>
-                          <div className="ml-2">
-                            {event.resource.type === 'study' ? (
-                              <BookOpen size={16} />
-                            ) : (
-                              <Clock size={16} />
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                      <DraggableEvent
+                        key={event.id}
+                        event={event}
+                        onEventClick={handleEventClick}
+                      />
                     ))}
-                  </div>
+                  </TimeSlotDropZone>
                 </div>
               </div>
             );
