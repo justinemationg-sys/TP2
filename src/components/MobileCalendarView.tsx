@@ -480,14 +480,17 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      begin: () => {
+    }), [event]);
+
+    // Handle drag start/end with useEffect
+    React.useEffect(() => {
+      if (isDragging) {
         setIsDragging(true);
         setDragFeedback('');
-      },
-      end: () => {
+      } else {
         setIsDragging(false);
-      },
-    }), [event]);
+      }
+    }, [isDragging]);
 
     const canDrag = event.resource.type === 'study';
 
