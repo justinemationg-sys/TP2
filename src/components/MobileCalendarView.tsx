@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Clock, BookOpen, X, Play, Trash2 } from 'lucide-react';
-import { StudyPlan, FixedCommitment, Task } from '../types';
-import { checkSessionStatus, formatTime } from '../utils/scheduling';
+import { StudyPlan, FixedCommitment, Task, StudySession, UserSettings } from '../types';
+import { checkSessionStatus, formatTime, validateTimeSlot, doesCommitmentApplyToDate } from '../utils/scheduling';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { TouchBackend } from 'react-dnd-touch-backend';
 import moment from 'moment';
 
 interface MobileCalendarViewProps {
