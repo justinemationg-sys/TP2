@@ -599,6 +599,14 @@ const CalendarView: React.FC<CalendarViewProps> = ({
     const originalDate = session.planDate || event.resource.data.planDate;
     const sessionDuration = session.allocatedHours;
 
+    // Check if session is missed - missed sessions cannot be moved
+    const sessionStatus = checkSessionStatus(session, originalDate);
+    if (sessionStatus === 'missed') {
+      setDragFeedback('Missed sessions cannot be rescheduled');
+      setTimeout(() => setDragFeedback(''), 3000);
+      return;
+    }
+
     // Restrict movement to same day only
     if (targetDate !== originalDate) {
       setDragFeedback('Sessions can only be moved within the same day');
