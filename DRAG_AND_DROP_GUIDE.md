@@ -8,7 +8,7 @@ The calendar view now supports drag and drop functionality for study session blo
 
 ### ✅ What You Can Drag
 - **Study Session Blocks** - All study sessions can be dragged and dropped within the same day
-- **Automatic Snapping** - Sessions automatically snap to the nearest available 15-minute interval
+- **Automatic Snapping** - Sessions automatically snap to the nearest available time interval based on your buffer time setting
 - **Smart Conflict Detection** - Prevents overlapping with existing sessions or commitments
 - **Visual Feedback** - Real-time feedback during dragging with color-coded indicators
 
