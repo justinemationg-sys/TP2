@@ -33,12 +33,16 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
   studyPlans,
   fixedCommitments,
   tasks,
+  settings,
   onSelectTask,
   onStartManualSession,
   onDeleteFixedCommitment,
+  onUpdateStudyPlans,
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragFeedback, setDragFeedback] = useState<string>('');
 
   // Generate dates for the horizontal picker (7 days around selected date)
   const dateRange = useMemo(() => {
