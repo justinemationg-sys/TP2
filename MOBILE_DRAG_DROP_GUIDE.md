@@ -15,6 +15,13 @@ The TimePilot mobile calendar now supports drag and drop functionality for rearr
 - **Same-day Restrictions** - Sessions can only be moved within the same day
 - **Work Day Validation** - Ensures sessions are only dropped on configured work days
 
+### ❌ What You Cannot Drag
+
+- **Fixed Commitments** - These remain locked in place and do not show interaction UI when tapped
+- **Missed Sessions** - Sessions that have been missed (🚫 icon) cannot be rescheduled via drag and drop
+- **Sessions to Different Days** - Sessions can only be moved within the same day
+- **Sessions on Non-Work Days** - Cannot drop sessions on days you haven't configured as work days
+
 ### 📱 Mobile-Specific Enhancements
 
 - **Touch Backend Integration** - Uses `react-dnd-touch-backend` for optimal touch support
