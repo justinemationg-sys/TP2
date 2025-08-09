@@ -663,7 +663,7 @@ const StudyPlanView: React.FC<StudyPlanViewProps> = ({ studyPlans, tasks, fixedC
             <div>
               <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">🧪 Testing Mode</h3>
               <p className="text-xs text-yellow-600 dark:text-yellow-300 mt-1">
-                Click to create test data with missed sessions to test the enhanced redistribution system
+                Click to create realistic test data with proper deadlines, mixed session results, and overdue tasks
               </p>
             </div>
             <button
