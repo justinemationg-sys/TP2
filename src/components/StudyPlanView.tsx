@@ -1000,6 +1000,12 @@ const StudyPlanView: React.FC<StudyPlanViewProps> = ({ studyPlans, tasks, fixedC
             const currentStatusColors = statusColors[currentSessionStatus as keyof typeof statusColors];
             const importanceLevel = task.importance ? 'high' : 'low';
             const importanceStyle = importanceColors[importanceLevel];
+
+            // Calculate task progress (similar to Dashboard)
+            const allSessionsForTask = studyPlans.flatMap(plan => plan.plannedTasks).filter(s => s.taskId === task.id);
+            const completedSessions = allSessionsForTask.filter(s => s.done || s.status === 'completed');
+            const totalSessions = allSessionsForTask.length;
+            const sessionNumber = session.sessionNumber || 1;
             
                           return (
                 <div
@@ -1035,6 +1041,11 @@ const StudyPlanView: React.FC<StudyPlanViewProps> = ({ studyPlans, tasks, fixedC
                       <TrendingUp size={16} />
                       <span>
                         {formatTime(session.allocatedHours)}
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <span className="text-xs">
+                        Session {sessionNumber}/{totalSessions}
                       </span>
                     </div>
                     {isRescheduled && session.originalTime && (
