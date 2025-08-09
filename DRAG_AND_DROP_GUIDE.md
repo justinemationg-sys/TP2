@@ -99,10 +99,16 @@ The system provides helpful feedback in the top-right corner:
 - **Modern browsers required** - Works with Chrome, Firefox, Safari, Edge (recent versions)
 - **Touch devices** - Limited support on mobile devices (use mobile calendar view instead)
 
+## Technical Details
+
+### Dynamic Snapping
+- **Interval Size**: Uses your configured buffer time between sessions (minimum 5 minutes)
+- **Smart Grid**: Snapping respects your workflow by aligning with buffer settings
+- **Consistent Spacing**: Maintains optimal session spacing based on your preferences
+
 ## Future Enhancements
 
 Potential improvements being considered:
 - Multi-session selection and bulk movement within the same day
 - Undo/redo functionality for moves
-- Custom snap intervals (beyond 15 minutes)
 - Enhanced visual indicators for same-day restrictions
