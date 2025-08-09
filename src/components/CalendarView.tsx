@@ -1119,7 +1119,16 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           }}
           rtl={false}
           dayLayoutAlgorithm="no-overlap"
-          draggableAccessor={(event) => event.resource.type === 'study'}
+          draggableAccessor={(event) => {
+            if (event.resource.type !== 'study') return false;
+
+            // Check if session is missed - missed sessions cannot be dragged
+            const session = event.resource.data;
+            const planDate = session.planDate || moment(event.start).format('YYYY-MM-DD');
+            const sessionStatus = checkSessionStatus(session, planDate);
+
+            return sessionStatus !== 'missed';
+          }}
           resizable={false}
           onEventDrop={handleEventDrop}
           onDragStart={handleDragStart}
