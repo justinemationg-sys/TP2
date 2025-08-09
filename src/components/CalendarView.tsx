@@ -707,49 +707,6 @@ const CalendarView: React.FC<CalendarViewProps> = ({
     setTimeout(() => setDragFeedback(''), 3000);
   };
 
-  // Handle event resize
-  const handleEventResize = ({ event, start, end }: { event: CalendarEvent; start: Date; end: Date }) => {
-    // Only allow resizing study sessions
-    if (event.resource.type !== 'study' || !onUpdateStudyPlans) {
-      setDragFeedback('Only study sessions can be resized');
-      setTimeout(() => setDragFeedback(''), 3000);
-      return;
-    }
-
-    const session = event.resource.data as StudySession;
-    const newDuration = moment(end).diff(moment(start), 'hours', true);
-
-    // Validate minimum duration (15 minutes)
-    if (newDuration < 0.25) {
-      setDragFeedback('Session must be at least 15 minutes long');
-      setTimeout(() => setDragFeedback(''), 3000);
-      return;
-    }
-
-    // Update the study plans
-    const updatedPlans = studyPlans.map(plan => {
-      return {
-        ...plan,
-        plannedTasks: plan.plannedTasks.map(s => {
-          if (s.taskId === session.taskId && s.sessionNumber === session.sessionNumber) {
-            return {
-              ...s,
-              startTime: moment(start).format('HH:mm'),
-              endTime: moment(end).format('HH:mm'),
-              allocatedHours: newDuration,
-              rescheduledAt: new Date().toISOString(),
-              isManualOverride: true
-            };
-          }
-          return s;
-        })
-      };
-    });
-
-    onUpdateStudyPlans(updatedPlans);
-    setDragFeedback(`Session resized to ${newDuration.toFixed(1)} hours`);
-    setTimeout(() => setDragFeedback(''), 3000);
-  };
 
 
   // Custom event style for modern look, now color-coded by priority or type
