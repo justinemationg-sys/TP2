@@ -10,9 +10,11 @@ interface MobileCalendarViewProps {
   studyPlans: StudyPlan[];
   fixedCommitments: FixedCommitment[];
   tasks: Task[];
+  settings?: UserSettings;
   onSelectTask?: (task: Task, session?: { allocatedHours: number; planDate?: string; sessionNumber?: number }) => void;
   onStartManualSession?: (commitment: FixedCommitment, durationSeconds: number) => void;
   onDeleteFixedCommitment?: (commitmentId: string) => void;
+  onUpdateStudyPlans?: (updatedPlans: StudyPlan[]) => void;
 }
 
 interface CalendarEvent {
