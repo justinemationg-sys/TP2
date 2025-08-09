@@ -554,9 +554,11 @@ const CalendarView: React.FC<CalendarViewProps> = ({
     };
 
     // Try to find the nearest available slot to the target time
-    const gridSize = 15 * 60 * 1000; // 15 minutes in milliseconds
+    // Use buffer time from settings, with 15 minutes as fallback minimum
+    const bufferMinutes = Math.max(settings.bufferTimeBetweenSessions || 15, 5); // Minimum 5 minutes
+    const gridSize = bufferMinutes * 60 * 1000; // Convert minutes to milliseconds
 
-    // Round target time to nearest 15-minute interval
+    // Round target time to nearest buffer interval
     const roundedTarget = new Date(Math.round(targetStart.getTime() / gridSize) * gridSize);
 
     // Search for available slots starting from the rounded target time
