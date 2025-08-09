@@ -46,10 +46,12 @@ The TimePilot mobile calendar now supports drag and drop functionality for rearr
 ### Visual Indicators
 
 - **📱 Icon** - Appears on draggable study sessions
+- **🚫 Icon** - Appears on missed sessions that cannot be dragged
 - **Green Highlight** - Valid drop zones during drag
 - **Blue Background** - Potential drop zones
 - **Dashed Border** - Active drop target
 - **Notification** - Success/error feedback in top-right corner
+- **No Click Response** - Commitments no longer show interaction UI when tapped
 
 ## Technical Implementation
 
