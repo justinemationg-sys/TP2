@@ -63,6 +63,7 @@ The system provides helpful feedback in the top-right corner:
 - `"Session moved to [Date] at [Time]"` - Successful move within the same day
 
 ### Error Messages
+- `"Missed sessions cannot be rescheduled"` - Trying to move a missed session
 - `"Sessions can only be moved within the same day"` - Trying to move to different day
 - `"Cannot move session to [Day] - not a work day"` - Invalid day
 - `"No available time slot found for this session"` - No space available
