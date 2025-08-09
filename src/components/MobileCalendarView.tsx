@@ -569,14 +569,22 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50 rounded-2xl shadow-xl p-4 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center space-x-2">
-          <BookOpen className="text-blue-600 dark:text-blue-400" size={24} />
-          <span>Calendar</span>
-        </h2>
-      </div>
+    <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
+      <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50 rounded-2xl shadow-xl p-4 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
+        {/* Drag feedback notification */}
+        {dragFeedback && (
+          <div className="fixed top-4 right-4 z-50 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
+            {dragFeedback}
+          </div>
+        )}
+
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center space-x-2">
+            <BookOpen className="text-blue-600 dark:text-blue-400" size={24} />
+            <span>Calendar {isDragging && <span className="text-sm text-blue-500">(Dragging...)</span>}</span>
+          </h2>
+        </div>
 
       {/* Horizontal Date Picker */}
       <div className="mb-6">
@@ -810,7 +818,8 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
         </div>
       )}
 
-    </div>
+      </div>
+    </DndProvider>
   );
 };
 
