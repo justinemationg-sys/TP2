@@ -992,9 +992,11 @@ const CalendarView: React.FC<CalendarViewProps> = ({
         studyPlans={studyPlans}
         fixedCommitments={fixedCommitments}
         tasks={tasks}
+        settings={settings}
         onSelectTask={onSelectTask}
         onStartManualSession={onStartManualSession}
         onDeleteFixedCommitment={onDeleteFixedCommitment}
+        onUpdateStudyPlans={onUpdateStudyPlans}
       />
     );
   }
