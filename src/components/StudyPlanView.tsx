@@ -668,15 +668,15 @@ const StudyPlanView: React.FC<StudyPlanViewProps> = ({ studyPlans, tasks, fixedC
             </div>
             <button
               onClick={() => {
-                if ((window as any).setupTestData) {
-                  (window as any).setupTestData();
+                if ((window as any).setupRealisticTestData) {
+                  (window as any).setupRealisticTestData();
                 } else {
-                  setNotificationMessage('Test data setup not available');
+                  setNotificationMessage('Realistic test data setup not available');
                 }
               }}
               className="px-3 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-lg hover:bg-yellow-200 transition-colors dark:bg-yellow-900 dark:text-yellow-200 dark:hover:bg-yellow-800"
             >
-              Setup Test Data
+              Setup Realistic Test Data
             </button>
           </div>
         </div>
