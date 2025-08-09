@@ -310,8 +310,11 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
 
   // Handle click on a calendar event
   const handleEventClick = (event: CalendarEvent) => {
-    // For study sessions, show a simple detail modal
-    setSelectedEvent(event);
+    // Only show modal for study sessions, not commitments
+    if (event.resource.type === 'study') {
+      setSelectedEvent(event);
+    }
+    // Do nothing for commitments - remove the UI
   };
 
   // Handle starting a manual commitment session from the detail modal
