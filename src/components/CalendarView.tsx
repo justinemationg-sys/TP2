@@ -594,9 +594,17 @@ const CalendarView: React.FC<CalendarViewProps> = ({
 
     const session = event.resource.data as StudySession;
     const targetDate = moment(start).format('YYYY-MM-DD');
+    const originalDate = session.planDate || event.resource.data.planDate;
     const sessionDuration = session.allocatedHours;
 
-    // Check if target day is a work day
+    // Restrict movement to same day only
+    if (targetDate !== originalDate) {
+      setDragFeedback('Sessions can only be moved within the same day');
+      setTimeout(() => setDragFeedback(''), 3000);
+      return;
+    }
+
+    // Check if target day is a work day (keeping this for consistency)
     const targetDayOfWeek = moment(start).day();
     if (!settings.workDays.includes(targetDayOfWeek)) {
       setDragFeedback(`Cannot move session to ${moment(start).format('dddd')} - not a work day`);
@@ -1151,9 +1159,8 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           rtl={false}
           dayLayoutAlgorithm="no-overlap"
           draggableAccessor={(event) => event.resource.type === 'study'}
-          resizable={true}
+          resizable={false}
           onEventDrop={handleEventDrop}
-          onEventResize={handleEventResize}
           onDragStart={handleDragStart}
         />
       </div>
@@ -1295,19 +1302,10 @@ const CalendarView: React.FC<CalendarViewProps> = ({
           cursor: grab !important;
         }
 
-        /* Resize handles */
+        /* Resize handles disabled */
         .rbc-addons-dnd-resize-south-anchor,
         .rbc-addons-dnd-resize-north-anchor {
-          background-color: #3b82f6 !important;
-          height: 6px !important;
-          width: 100% !important;
-          opacity: 0 !important;
-          transition: opacity 0.2s !important;
-        }
-
-        .rbc-event:hover .rbc-addons-dnd-resize-south-anchor,
-        .rbc-event:hover .rbc-addons-dnd-resize-north-anchor {
-          opacity: 1 !important;
+          display: none !important;
         }
 
         /* Only allow drag on study sessions */
