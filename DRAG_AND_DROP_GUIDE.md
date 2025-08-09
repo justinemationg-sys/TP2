@@ -14,6 +14,7 @@ The calendar view now supports drag and drop functionality for study session blo
 
 ### ❌ What You Cannot Drag
 - **Fixed Commitments** - These remain locked in place
+- **Missed Sessions** - Sessions that have been missed cannot be rescheduled via drag and drop
 - **Sessions to Different Days** - Sessions can only be moved within the same day
 - **Sessions on Non-Work Days** - Cannot drop sessions on days you haven't configured as work days
 
@@ -62,6 +63,7 @@ The system provides helpful feedback in the top-right corner:
 - `"Session moved to [Date] at [Time]"` - Successful move within the same day
 
 ### Error Messages
+- `"Missed sessions cannot be rescheduled"` - Trying to move a missed session
 - `"Sessions can only be moved within the same day"` - Trying to move to different day
 - `"Cannot move session to [Day] - not a work day"` - Invalid day
 - `"No available time slot found for this session"` - No space available
@@ -90,7 +92,8 @@ The system provides helpful feedback in the top-right corner:
 ## Troubleshooting
 
 ### Common Issues
-- **Can't drag a session**: Check if it's a study session (not a commitment)
+- **Can't drag a session**: Check if it's a study session (not a commitment) and not a missed session
+- **Session won't move**: Missed sessions cannot be rescheduled - look for red styling or strikethrough text
 - **Can't move to different day**: Sessions are restricted to their original day for better time management
 - **Drop doesn't work**: Ensure you're dropping within the same day and within study hours
 - **Session disappears**: The system may have found a better nearby slot - check the feedback message
