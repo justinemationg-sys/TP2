@@ -476,14 +476,19 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
 
   // Draggable Event Component for mobile
   const DraggableEvent: React.FC<{ event: CalendarEvent; onEventClick: (event: CalendarEvent) => void }> = ({ event, onEventClick }) => {
+    // Check if session is missed to prevent dragging
+    const isStudySession = event.resource.type === 'study';
+    const sessionStatus = isStudySession ? checkSessionStatus(event.resource.data.session, moment(selectedDate).format('YYYY-MM-DD')) : null;
+    const isMissedSession = sessionStatus === 'missed';
+
     const [{ isDragging }, drag] = useDrag(() => ({
       type: 'event',
       item: event,
-      canDrag: event.resource.type === 'study', // Only study sessions can be dragged
+      canDrag: isStudySession && !isMissedSession, // Only non-missed study sessions can be dragged
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-    }), [event]);
+    }), [event, isMissedSession]);
 
     // Handle drag start/end with useEffect
     React.useEffect(() => {
@@ -495,7 +500,7 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
       }
     }, [isDragging]);
 
-    const canDrag = event.resource.type === 'study';
+    const canDrag = isStudySession && !isMissedSession;
 
     return (
       <div
