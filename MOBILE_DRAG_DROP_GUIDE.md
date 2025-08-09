@@ -80,6 +80,10 @@ The TimePilot mobile calendar now supports drag and drop functionality for rearr
 - **Work days only** - Cannot drop on non-work days
 - **No resizing** - Session durations are fixed
 
+### Mobile-Specific Restrictions
+- **Missed sessions** - Sessions marked as missed (🚫) cannot be rescheduled
+- **Commitment interactions** - Commitments no longer show interaction UI when tapped
+
 ### Mobile-Specific
 - **Touch scrolling** - Disabled during drag operations
 - **Long press required** - Touch and hold to start dragging
