@@ -7,13 +7,14 @@ The calendar view now supports drag and drop functionality for study session blo
 ## Features
 
 ### ✅ What You Can Drag
-- **Study Session Blocks** - All study sessions can be dragged and dropped
+- **Study Session Blocks** - All study sessions can be dragged and dropped within the same day
 - **Automatic Snapping** - Sessions automatically snap to the nearest available 15-minute interval
 - **Smart Conflict Detection** - Prevents overlapping with existing sessions or commitments
 - **Visual Feedback** - Real-time feedback during dragging with color-coded indicators
 
 ### ❌ What You Cannot Drag
 - **Fixed Commitments** - These remain locked in place
+- **Sessions to Different Days** - Sessions can only be moved within the same day
 - **Sessions on Non-Work Days** - Cannot drop sessions on days you haven't configured as work days
 
 ## How to Use
@@ -49,30 +50,22 @@ When you drop a session, the system:
 - **Study window**: Must be within your configured study hours
 - **No overlaps**: Automatic conflict detection with buffer time consideration
 
-## Session Resizing
+## Session Sizing
 
-### How to Resize
-1. **Hover over a session** - Resize handles appear at top and bottom
-2. **Click and drag the handles** - Adjust session duration
-3. **15-minute increments** - Resizing snaps to quarter-hour intervals
-
-### Resize Validation
-- **Minimum 15 minutes** - Sessions cannot be made shorter
-- **Conflict detection** - Prevents resizing into occupied time slots
+**Note:** Session resizing has been disabled. Session durations are predetermined by the study plan regeneration system. To change session lengths, use the "Regenerate Study Plan" feature which will optimally distribute your available study time.
 
 ## Feedback Messages
 
 The system provides helpful feedback in the top-right corner:
 
 ### Success Messages
-- `"Session moved to [Date] at [Time]"` - Successful move
-- `"Session resized to [X] hours"` - Successful resize
+- `"Session moved to [Date] at [Time]"` - Successful move within the same day
 
 ### Error Messages
+- `"Sessions can only be moved within the same day"` - Trying to move to different day
 - `"Cannot move session to [Day] - not a work day"` - Invalid day
 - `"No available time slot found for this session"` - No space available
 - `"Only study sessions can be moved"` - Trying to drag commitments
-- `"Session must be at least 15 minutes long"` - Invalid resize
 
 ## Technical Details
 
@@ -89,15 +82,17 @@ The system provides helpful feedback in the top-right corner:
 ## Tips for Best Results
 
 1. **Use Week/Day view** - Drag and drop works best in detailed calendar views
-2. **Check work days** - Ensure your target day is configured as a work day
+2. **Stay within the same day** - Sessions can only be rearranged within their original day
 3. **Mind the buffer** - Consider buffer times between sessions when placing
-4. **Combine with regeneration** - Use "Regenerate Study Plan" if you want to optimize around your manual changes
+4. **Use regeneration for major changes** - For moving sessions to different days or changing durations, use "Regenerate Study Plan"
+5. **Optimal time management** - Use drag and drop for fine-tuning session times, regeneration for structural changes
 
 ## Troubleshooting
 
 ### Common Issues
 - **Can't drag a session**: Check if it's a study session (not a commitment)
-- **Drop doesn't work**: Ensure the target day is a work day and within study hours
+- **Can't move to different day**: Sessions are restricted to their original day for better time management
+- **Drop doesn't work**: Ensure you're dropping within the same day and within study hours
 - **Session disappears**: The system may have found a better nearby slot - check the feedback message
 
 ### Browser Compatibility
@@ -107,7 +102,7 @@ The system provides helpful feedback in the top-right corner:
 ## Future Enhancements
 
 Potential improvements being considered:
-- Multi-session selection and bulk movement
-- Drag to different days in month view
+- Multi-session selection and bulk movement within the same day
 - Undo/redo functionality for moves
 - Custom snap intervals (beyond 15 minutes)
+- Enhanced visual indicators for same-day restrictions
