@@ -44,6 +44,75 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [dragFeedback, setDragFeedback] = useState<string>('');
 
+  // Utility function to find available time slots (copied from CalendarView)
+  const findNearestAvailableSlot = (targetStart: Date, sessionDuration: number, targetDate: string): { start: Date; end: Date } | null => {
+    if (!settings) return null;
+
+    // Get all busy slots for the target date
+    const busySlots: Array<{ start: Date; end: Date }> = [];
+
+    // Add existing study sessions
+    studyPlans.forEach(plan => {
+      if (plan.date === targetDate) {
+        plan.plannedTasks.forEach(session => {
+          if (session.status !== 'skipped' && session.startTime && session.endTime) {
+            const sessionStart = moment(targetDate + ' ' + session.startTime).toDate();
+            const sessionEnd = moment(targetDate + ' ' + session.endTime).toDate();
+            busySlots.push({ start: sessionStart, end: sessionEnd });
+          }
+        });
+      }
+    });
+
+    // Add fixed commitments
+    fixedCommitments.forEach(commitment => {
+      if (doesCommitmentApplyToDate(commitment, targetDate) && commitment.startTime && commitment.endTime) {
+        const commitmentStart = moment(targetDate + ' ' + commitment.startTime).toDate();
+        const commitmentEnd = moment(targetDate + ' ' + commitment.endTime).toDate();
+        busySlots.push({ start: commitmentStart, end: commitmentEnd });
+      }
+    });
+
+    // Sort busy slots by start time
+    busySlots.sort((a, b) => a.start.getTime() - b.start.getTime());
+
+    // Set study window boundaries
+    const dayStart = moment(targetDate).hour(settings.studyWindowStartHour || 6).minute(0).second(0).toDate();
+    const dayEnd = moment(targetDate).hour(settings.studyWindowEndHour || 23).minute(0).second(0).toDate();
+
+    const sessionDurationMs = sessionDuration * 60 * 60 * 1000;
+    const bufferTimeMs = (settings.bufferTimeBetweenSessions || 0) * 60 * 1000;
+
+    // Function to check if a slot is valid
+    const isSlotValid = (slotStart: Date, slotEnd: Date) => {
+      if (slotStart < dayStart || slotEnd > dayEnd) return false;
+      for (const busySlot of busySlots) {
+        const adjustedStart = new Date(slotStart.getTime() - bufferTimeMs);
+        const adjustedEnd = new Date(slotEnd.getTime() + bufferTimeMs);
+        if (adjustedStart < busySlot.end && adjustedEnd > busySlot.start) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    // Try to find the nearest available slot
+    const bufferMinutes = Math.max(settings.bufferTimeBetweenSessions || 15, 5);
+    const gridSize = bufferMinutes * 60 * 1000;
+    const roundedTarget = new Date(Math.round(targetStart.getTime() / gridSize) * gridSize);
+
+    for (let offset = 0; offset <= 12 * 60 * 60 * 1000; offset += gridSize) {
+      for (const direction of [1, -1]) {
+        const testStart = new Date(roundedTarget.getTime() + (direction * offset));
+        const testEnd = new Date(testStart.getTime() + sessionDurationMs);
+        if (isSlotValid(testStart, testEnd)) {
+          return { start: testStart, end: testEnd };
+        }
+      }
+    }
+    return null;
+  };
+
   // Generate dates for the horizontal picker (7 days around selected date)
   const dateRange = useMemo(() => {
     const dates = [];
