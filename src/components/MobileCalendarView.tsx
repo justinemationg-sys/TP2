@@ -506,9 +506,9 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
       <div
         ref={canDrag ? drag : null}
         onClick={() => onEventClick(event)}
-        className={`mb-2 p-3 rounded-lg text-white text-sm font-medium cursor-pointer transition-all duration-200 hover:opacity-80 ${
+        className={`mb-2 p-3 rounded-lg text-white text-sm font-medium transition-all duration-200 ${
           isDragging ? 'opacity-50 scale-95' : ''
-        } ${canDrag ? 'cursor-move' : 'cursor-pointer'}`}
+        } ${canDrag ? 'cursor-move hover:opacity-80' : isMissedSession ? 'cursor-default opacity-75' : 'cursor-pointer hover:opacity-80'}`}
         style={{
           backgroundColor: getEventColor(event),
           touchAction: canDrag ? 'none' : 'auto' // Disable touch scrolling when dragging
