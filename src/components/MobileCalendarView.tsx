@@ -338,6 +338,122 @@ const MobileCalendarView: React.FC<MobileCalendarViewProps> = ({
     setSelectedEvent(null); // Close modal after deleting
   };
 
+  // Handle mobile drag and drop
+  const handleMobileDrop = (draggedEvent: CalendarEvent, targetHour: number) => {
+    if (!onUpdateStudyPlans || !settings || draggedEvent.resource.type !== 'study') {
+      setDragFeedback('Only study sessions can be moved');
+      setTimeout(() => setDragFeedback(''), 3000);
+      return;
+    }
+
+    const session = draggedEvent.resource.data.session as StudySession;
+    const targetDate = moment(selectedDate).format('YYYY-MM-DD');
+    const originalDate = session.planDate || moment(draggedEvent.start).format('YYYY-MM-DD');
+    const sessionDuration = session.allocatedHours;
+
+    // Restrict movement to same day only
+    if (targetDate !== originalDate) {
+      setDragFeedback('Sessions can only be moved within the same day');
+      setTimeout(() => setDragFeedback(''), 3000);
+      return;
+    }
+
+    // Create target start time
+    const targetStart = moment(selectedDate).hour(targetHour).minute(0).second(0).toDate();
+
+    // Check if target day is a work day
+    const targetDayOfWeek = moment(selectedDate).day();
+    if (!settings.workDays.includes(targetDayOfWeek)) {
+      setDragFeedback(`Cannot move session to ${moment(selectedDate).format('dddd')} - not a work day`);
+      setTimeout(() => setDragFeedback(''), 3000);
+      return;
+    }
+
+    // Find the nearest available slot
+    const availableSlot = findNearestAvailableSlot(targetStart, sessionDuration, targetDate);
+
+    if (!availableSlot) {
+      setDragFeedback('No available time slot found for this session');
+      setTimeout(() => setDragFeedback(''), 3000);
+      return;
+    }
+
+    // Update the study plans (same logic as desktop version)
+    const updatedPlans = studyPlans.map(plan => {
+      if (plan.date === targetDate) {
+        const newSession = {
+          ...session,
+          startTime: moment(availableSlot.start).format('HH:mm'),
+          endTime: moment(availableSlot.end).format('HH:mm'),
+          originalTime: session.originalTime || session.startTime,
+          originalDate: session.originalDate || originalDate,
+          rescheduledAt: new Date().toISOString(),
+          isManualOverride: true
+        };
+
+        const existingSessionIndex = plan.plannedTasks.findIndex(s =>
+          s.taskId === session.taskId && s.sessionNumber === session.sessionNumber
+        );
+
+        if (existingSessionIndex >= 0) {
+          const updatedTasks = [...plan.plannedTasks];
+          updatedTasks[existingSessionIndex] = newSession;
+          return { ...plan, plannedTasks: updatedTasks };
+        } else {
+          return {
+            ...plan,
+            plannedTasks: [...plan.plannedTasks, newSession]
+          };
+        }
+      } else if (plan.date === originalDate) {
+        const updatedTasks = plan.plannedTasks.filter(s =>
+          !(s.taskId === session.taskId && s.sessionNumber === session.sessionNumber)
+        );
+        return { ...plan, plannedTasks: updatedTasks };
+      } else {
+        return plan;
+      }
+    });
+
+    // Handle case when target date doesn't exist in plans
+    const targetPlanExists = updatedPlans.some(plan => plan.date === targetDate);
+    if (!targetPlanExists) {
+      const newSession = {
+        ...session,
+        startTime: moment(availableSlot.start).format('HH:mm'),
+        endTime: moment(availableSlot.end).format('HH:mm'),
+        originalTime: session.originalTime || session.startTime,
+        originalDate: session.originalDate || originalDate,
+        rescheduledAt: new Date().toISOString(),
+        isManualOverride: true
+      };
+
+      updatedPlans.push({
+        id: `plan-${targetDate}`,
+        date: targetDate,
+        plannedTasks: [newSession],
+        totalStudyHours: sessionDuration,
+        isOverloaded: false,
+        availableHours: settings.dailyAvailableHours
+      });
+
+      const originalPlanIndex = updatedPlans.findIndex(plan => plan.date === originalDate);
+      if (originalPlanIndex >= 0) {
+        const originalPlan = updatedPlans[originalPlanIndex];
+        const updatedOriginalTasks = originalPlan.plannedTasks.filter(s =>
+          !(s.taskId === session.taskId && s.sessionNumber === session.sessionNumber)
+        );
+        updatedPlans[originalPlanIndex] = { ...originalPlan, plannedTasks: updatedOriginalTasks };
+      }
+    }
+
+    onUpdateStudyPlans(updatedPlans);
+
+    const snappedTime = moment(availableSlot.start).format('HH:mm');
+    setDragFeedback(`Session moved to ${moment(targetDate).format('MMM D')} at ${snappedTime}`);
+    setTimeout(() => setDragFeedback(''), 3000);
+  };
+
 
   // Format hour for time slot display (e.g., "4 AM", "1 PM")
   const formatTimeSlot = (hour: number) => {
